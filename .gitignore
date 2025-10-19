@@ -1,0 +1,4 @@
+.env
+.temp/
+.vscode/
+tests/*.txt

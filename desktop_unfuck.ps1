@@ -132,16 +132,16 @@ function main {
     		if (![string]::IsNullOrEmpty($fileType)) { 
 			$fileType = $fileType.TrimStart(".")
 		}
-		$dest = $PathDesc.Path + "\" + $config[$fileType].Path + $PathDesc.PathSuffix
-		Write-Host $dest
+		$dest = $config[$fileType]
 		if ($dest.Skip) {
 			$global:skipped++
 			continue
 		}
+		$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
 		$fileName = Split-Path $file -Leaf
 		Write-Host $fileType
-
-		#mv $file "$dest\$fileName"
+		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
+		mv $file.FullName "$destPath\$fileName"
 	}
 }
 # Total number of icons that can fit in 1 layer on your screen(s)
@@ -157,7 +157,7 @@ $publicFiles | Format-List
 main -Path $files
 main -Path $publicFiles
 
-if ($skipped > $desktopSize) {
-	Write-Host "shit"
+Write-Host "$skipped"
+if ($skipped -gt 0) {
+	Write-Host "Handle recurrency"
 }
-Write-Host "$global:skipped"

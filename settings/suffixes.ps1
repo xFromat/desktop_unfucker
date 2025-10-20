@@ -1,0 +1,4 @@
+@{
+	priv = ""
+	public = "_public"
+}

@@ -1,11 +1,12 @@
 param (
     [string]$pathToUnfuck = [Environment]::GetFolderPath('Desktop'),
-    [string]$configPath = "$PSScriptRoot\config.ps1"
+    [string]$configPath = "$PSScriptRoot\settings\dataTypes.ps1"
 )
 
 . "$PSScriptRoot\tools\Get-DesktopIconGridFit.ps1"
 # Load the config
 $config = . $configPath
+$suffixes = . "$PSScriptRoot\settings\suffixes.ps1"
 $global:skipped = 0
 
 # Public desktop path
@@ -105,10 +106,10 @@ function Init-CounterObj {
 			DirsCount = 0
 			Dirs = @()
 		}
-	}
+	}  
 	return [PSCustomObject]@{
 		Path = $path
-		PathSuffix = if ((Resolve-Path $path).ProviderPath -like "C:\Users\Public\*") { "_public" } else { "" }
+		PathSuffix = if ((Resolve-Path $path).ProviderPath -like "C:\Users\Public\*") { $suffixes["public"] } else { $suffixes["priv"] }
 		FilesCount = (Get-ChildItem -Path $path -File).Count
 		Files = Get-ChildItem -Path $path -File
 		DirsCount = (Get-ChildItem -Path $path -Directory).Count
@@ -120,14 +121,13 @@ function main {
 	param(
 		[PSCustomObject]$PathDesc
 	)
-	Write-Host $Path
 	
 	if ([string]::IsNullOrWhiteSpace($PathDesc.Path) -or -not (Test-Path $PathDesc.Path)) {
 		return $null
 	}
 
 	foreach ($file in $PathDesc.Files) {
-		Write-Host $file.FullName
+		#Write-Host $file.FullName
 		$fileType = Get-FileType -file $file
     		if (![string]::IsNullOrEmpty($fileType)) { 
 			$fileType = $fileType.TrimStart(".")
@@ -139,14 +139,14 @@ function main {
 		}
 		$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
 		$fileName = Split-Path $file -Leaf
-		Write-Host $fileType
+		#Write-Host $fileType
 		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
 		mv $file.FullName "$destPath\$fileName"
 	}
 }
 # Total number of icons that can fit in 1 layer on your screen(s)
 $desktopSize = Get-DesktopIconGridFit
-Write-Host "$desktopSize"
+$desktopSize | Format-Table -AutoSize
 
 $files = Init-CounterObj -path $pathToUnfuck
 $publicFiles = Init-CounterObj -path $publicPathToUnfuck

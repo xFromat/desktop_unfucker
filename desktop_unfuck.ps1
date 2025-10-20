@@ -1,12 +1,21 @@
 param (
     [string]$pathToUnfuck = [Environment]::GetFolderPath('Desktop'),
-    [string]$configPath = "$PSScriptRoot\settings\dataTypes.ps1"
+    [string]$configPath = "$PSScriptRoot\settings\dataTypes.ps1",
+	[bool]$ForceDirs = $false,
+	[bool]$ForceApps = $false,
+	[int]$executionCounter = 0
 )
 
 . "$PSScriptRoot\tools\Get-DesktopIconGridFit.ps1"
 # Load the config
 $config = . $configPath
 $suffixes = . "$PSScriptRoot\settings\suffixes.ps1"
+
+if ($ForceApps) {
+	$apps["Skip"] = $false
+}
+
+$global:epsilon = 15
 $global:skipped = 0
 
 # Public desktop path
@@ -143,6 +152,13 @@ function main {
 		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
 		mv $file.FullName "$destPath\$fileName"
 	}
+	if (-not $ForceDirs -and $config["dir"].Skip) { return }
+	$dest = $config["dir"]
+	$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
+	foreach ($dir in $PathDesc.Dirs) {
+		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
+		mv $dir.FullName "$destPath\"
+	}
 }
 # Total number of icons that can fit in 1 layer on your screen(s)
 $desktopSize = Get-DesktopIconGridFit
@@ -158,6 +174,21 @@ main -Path $files
 main -Path $publicFiles
 
 Write-Host "$skipped"
-if ($skipped -gt 0) {
+$allIcons = -$epsilon
+foreach ($screen in $desktopSize) {
+	$allIcons += $screen.TotalIcons
+}
+
+if ($executionCounter -ge 3) {
+	exit 0
+}
+Write-Host $allIcons
+if ($skipped -gt $allIcons) {
+	if (-not $ForceDirs) {
+		Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" -executionCounter $($executionCounter + 1) -ForceDirs `"$true`""
+	}
+	if (-not $ForceApps) {
+		Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" -executionCounter $($executionCounter + 1) -ForceApps `"$true`" -ForceDirs `"$true`""
+	}
 	Write-Host "Handle recurrency"
 }

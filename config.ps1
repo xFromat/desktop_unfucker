@@ -70,13 +70,13 @@ $idk = @{
 	wmv = $mpx
 	flv = $mpx
 	mp3 = $mpx
-    	wav = $mpx
-    	flac = $mpx
+	wav = $mpx
+ 	flac = $mpx
     	aac = $mpx
-    	ogg = $mpx
-    	wma = $mpx
-    	m4a = $mpx
-    	opus = $mpx
+	ogg = $mpx
+	wma = $mpx
+	m4a = $mpx
+	opus = $mpx
 
 	jpg = $pics
 	jpeg = $pics
@@ -86,7 +86,7 @@ $idk = @{
 	webp = $pics
 	tiff = $pics
 	ico = $pics
-    	heic = $pics
+	heic = $pics
 
 	msi = $install
 	msix = $install
@@ -99,16 +99,16 @@ $idk = @{
 	tsv = $calc
 
 	ppt = $slide
-    	pptx = $slide
-    	odp = $slide
-    	key = $slide
+	pptx = $slide
+	odp = $slide
+	key = $slide
 
 	zip= $zips
-    	rar= $zips
-    	tar = $zips
-    	gz = $zips
-    	"7z" = $zips
-    	cab = $zips
+	rar= $zips
+	tar = $zips
+	gz = $zips
+	"7z" = $zips
+	cab = $zips
 
 	cmd = $idk
 	bat = $idk

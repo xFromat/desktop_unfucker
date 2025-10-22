@@ -3,7 +3,8 @@ param (
     [string]$configPath = "$PSScriptRoot\settings\dataTypes.ps1",
 	[bool]$ForceDirs = $false,
 	[bool]$ForceApps = $false,
-	[int]$executionCounter = 0
+	[int]$executionCounter = 0,
+	[string]$PathPrefix = "unfucked_"
 )
 
 . "$PSScriptRoot\tools\Get-DesktopIconGridFit.ps1"
@@ -88,10 +89,12 @@ function Get-MagicNumberType {
 
     return $initialType 
 }
+
 function Strip-Dot {
 	param([System.IO.FileInfo]$ext)
 	return $ext.TrimStart(".")
 }
+
 function Get-FileType {
     param([System.IO.FileInfo]$file)
 
@@ -126,6 +129,43 @@ function Init-CounterObj {
 	}
 }
 
+function Is-DirSkippable {
+	param([string]$path, [string]$prefix)
+
+	return (Get-ChildItem -Path $path -Directory | Where-Object { $_.Name.StartsWith($prefix) })
+}
+
+function Get-UniquePath {
+    param (
+        [string]$Path,
+        [ValidateSet("File", "Directory")]
+        [string]$ItemType = "File"
+    )
+
+    $directory = Split-Path $Path -Parent
+    $originalName = Split-Path $Path -Leaf
+
+    if ($ItemType -eq "File") {
+        $baseName = [System.IO.Path]::GetFileNameWithoutExtension($originalName)
+        $ext = [System.IO.Path]::GetExtension($originalName)
+    } else {
+        $baseName = $originalName
+        $ext = ""
+    }
+
+    $counter = 1
+    $newName = "$baseName$ext"
+    $newPath = Join-Path -Path $directory -ChildPath $newName
+
+    while (Test-Path $newPath) {
+        $newName = "$baseName($counter)$ext"
+        $newPath = Join-Path -Path $directory -ChildPath $newName
+        $counter++
+    }
+
+    return $newPath
+}
+
 function main {
 	param(
 		[PSCustomObject]$PathDesc
@@ -142,6 +182,9 @@ function main {
 			$fileType = $fileType.TrimStart(".")
 		}
 		$dest = $config[$fileType]
+		if (-not $dest) {
+			$dest = $config["default"]
+		}
 		if ($dest.Skip) {
 			$global:skipped++
 			continue
@@ -150,14 +193,18 @@ function main {
 		$fileName = Split-Path $file -Leaf
 		#Write-Host $fileType
 		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
-		mv $file.FullName "$destPath\$fileName"
+		$uniquePath = Get-UniquePath -Path "$destPath\$fileName" -ItemType File
+		mv $file.FullName $uniquePath
 	}
 	if (-not $ForceDirs -and $config["dir"].Skip) { return }
 	$dest = $config["dir"]
 	$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
 	foreach ($dir in $PathDesc.Dirs) {
+		if (Is-DirSkippable $dir $PathPrefix) { continue }
 		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
-		mv $dir.FullName "$destPath\"
+		$dirName = Split-Path $dir -Leaf
+		$uniquePath = Get-UniquePath -Path $destPath\$dirName -ItemType Directory
+		mv $dir $uniquePath
 	}
 }
 # Total number of icons that can fit in 1 layer on your screen(s)
@@ -180,9 +227,12 @@ foreach ($screen in $desktopSize) {
 }
 
 if ($executionCounter -ge 3) {
+	Write-Host "Reccurency limit has been hit, peace out"
 	exit 0
 }
+
 Write-Host $allIcons
+
 if ($skipped -gt $allIcons) {
 	if (-not $ForceDirs) {
 		Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" -executionCounter $($executionCounter + 1) -ForceDirs `"$true`""

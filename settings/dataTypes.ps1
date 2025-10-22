@@ -134,5 +134,7 @@ $idk = @{
 	tmp = $idk
 	js = $idk
 	py = $idk
+
+	default = $idk
 }
 

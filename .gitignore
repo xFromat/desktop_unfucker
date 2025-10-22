@@ -1,5 +1,6 @@
 .env
 .temp/
 .vscode/
-tests/**.txt
+tests/*.txt
+**/generated_files.txt
 

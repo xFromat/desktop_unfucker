@@ -87,6 +87,7 @@ $idk = @{
 	tiff = $pics
 	ico = $pics
 	heic = $pics
+	svg = $pics
 
 	msi = $install
 	msix = $install

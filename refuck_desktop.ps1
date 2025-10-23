@@ -1,5 +1,6 @@
-# Define the prefix to match
-$prefix = "test_"  # <-- change this to your folder prefix
+param(
+	[string]$prefix = "unfucked_"
+)
 
 # Define the two target desktop locations
 $desktops = @(

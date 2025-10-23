@@ -1,11 +1,9 @@
 param(
-	[string]$prefix = "unfucked_"
-)
-
-# Define the two target desktop locations
-$desktops = @(
-    [Environment]::GetFolderPath("Desktop"),
-    "$env:PUBLIC\Desktop"
+	[string]$prefix = "unfucked_",
+	[string[]]$desktops = @(
+		[Environment]::GetFolderPath("Desktop"),
+		"$env:PUBLIC\Desktop"
+	)
 )
 
 foreach ($desktop in $desktops) {

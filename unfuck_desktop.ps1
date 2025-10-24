@@ -131,8 +131,8 @@ function Init-CounterObj {
 
 function Is-DirSkippable {
 	param([string]$path, [string]$prefix)
-
-	return (Get-ChildItem -Path $path -Directory | Where-Object { $_.Name.StartsWith($prefix) })
+	$dirName = Split-Path $path -Leaf
+	return ($dirName.StartsWith($prefix))
 }
 
 function Get-UniquePath {
@@ -189,16 +189,19 @@ function main {
 			$global:skipped++
 			continue
 		}
-		$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
+		$destPath = $PathDesc.Path + "\" + $PathPrefix + $dest.Path + $PathDesc.PathSuffix
 		$fileName = Split-Path $file -Leaf
 		#Write-Host $fileType
-		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
+		if (-not (Test-Path $destPath)) { 
+			New-Item -Path $destPath -ItemType Directory | Out-Null
+			Write-Host "Created directory $destPath" -ForegroundColor Yellow
+		}
 		$uniquePath = Get-UniquePath -Path "$destPath\$fileName" -ItemType File
 		mv $file.FullName $uniquePath
 	}
 	if (-not $ForceDirs -and $config["dir"].Skip) { return }
 	$dest = $config["dir"]
-	$destPath = $PathDesc.Path + "\" + $dest.Path + $PathDesc.PathSuffix
+	$destPath = $PathDesc.Path + "\" + $PathPrefix + $dest.Path + $PathDesc.PathSuffix
 	foreach ($dir in $PathDesc.Dirs) {
 		if (Is-DirSkippable $dir $PathPrefix) { continue }
 		if (-not (Test-Path $destPath)) { New-Item -Path $destPath -ItemType Directory | Out-Null }
@@ -227,7 +230,7 @@ foreach ($screen in $desktopSize) {
 }
 
 if ($executionCounter -ge 3) {
-	Write-Host "Reccurency limit has been hit, peace out"
+	Write-Host "Reccurency limit has been hit, peace out" -ForegroundColor Red
 	exit 0
 }
 
@@ -240,5 +243,4 @@ if ($skipped -gt $allIcons) {
 	if (-not $ForceApps) {
 		Start-Process -FilePath "powershell" -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" -executionCounter $($executionCounter + 1) -ForceApps `"$true`" -ForceDirs `"$true`""
 	}
-	Write-Host "Handle recurrency"
 }

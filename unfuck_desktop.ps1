@@ -1,9 +1,5 @@
 param (
     [string]$pathToUnfuck = [Environment]::GetFolderPath('Desktop'),
-    [string[]]$pathsToUnfuck = @(
-		[Environment]::GetFolderPath('Desktop'),
-		[System.IO.Path]::Combine($env:PUBLIC, 'Desktop')
-	),
     [string]$configPath = "$PSScriptRoot\settings\dataTypes.ps1",
 	[bool]$ForceDirs = $false,
 	[bool]$ForceApps = $false,

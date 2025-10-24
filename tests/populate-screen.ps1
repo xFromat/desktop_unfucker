@@ -6,15 +6,12 @@ param (
 )
 
 # Define a list of real file extensions
-#$exts = @(
-#	".txt", ".csv", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
-#    ".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg",
-#    ".mp3", ".wav", ".flac", ".mp4", ".avi", ".mkv", ".mov",
-#    ".zip", ".rar", ".7z", ".tar", ".gz",
-#    ".exe", ".msi", ".bat", ".ps1", ".sh", ".py", ".js", ".html", ".css", ".json", ".xml", ".lnk"
-#)
 $exts = @(
-    ".exe", ".lnk"
+	".txt", ".csv", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+	".pdf", ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg",
+	".mp3", ".wav", ".flac", ".mp4", ".avi", ".mkv", ".mov",
+	".zip", ".rar", ".7z", ".tar", ".gz",
+	".exe", ".msi", ".bat", ".ps1", ".sh", ".py", ".js", ".html", ".css", ".json", ".xml", ".lnk"
 )
 
 $generatedFiles = @()

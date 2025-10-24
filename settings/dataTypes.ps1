@@ -1,45 +1,45 @@
 $docs = @{
-	Path = "unfucked_dokumenty"
+	Path = "dokumenty"
 	Description = "Documents like files grouped together"
 	Skip = $false
 }
 $apps = @{
-	Path = "unfucked_aplikacje"
+	Path = "aplikacje"
 	Description = "Applications that were on the Desktop"
 	Skip = $true
 }
 $calc = @{
-	Path = "unfucked_excel"
+	Path = "excel"
 	Description = "Calc sheets"
 	Skip = $false
 }
 $slide = @{
-	Path = "unfucked_powerPoint"
+	Path = "powerPoint"
 	Description = "Multimedia presentations"
 	Skip = $false
 }
 $install = @{
-	Path = "unfucked_instalki"
+	Path = "instalki"
 	Description = "Install files"
 	Skip = $false
 }
 $mpx = @{
-	Path = "unfucked_audio_video"
+	Path = "audio_video"
 	Description = "Audio and video files"
 	Skip = $false
 }
 $pics = @{
-	Path = "unfucked_zdjecia"
+	Path = "zdjecia"
 	Description = "Pictures files"
 	Skip = $false
 }
 $zips = @{
-	Path = "unfucked_zips"
+	Path = "zips"
 	Description = "Archives"
 	Skip = $false
 }
 $idk = @{
-	Path = "unfucked_losowe"
+	Path = "losowe"
 	Description = "Target user just does not use this file type probably"
 	Skip = $false
 }
@@ -51,12 +51,12 @@ $idk = @{
 	rtf = $docs
 	txt = $docs
 	pdf = @{
-		Path = "unfucked_pdf"
+		Path = "pdf"
 		Description = "All pdfs files"
 	}
 	
 	dir = @{
-		Path = "unfucked_foldery"
+		Path = "foldery"
 		Description = "Directories that has been sitting on desktop"
 	}
 

@@ -29,20 +29,20 @@ function Get-DesktopIconGridFit {
 		$iconHeight = [math]::Max(([math]::Abs($metrics.IconVerticalSpacing) / [math]::Abs($metrics.BorderWidth)), $iconSize)
 
 		# Compute fit
-    	$columns = [math]::Floor($usableWidth / $iconWidth)
+		$columns = [math]::Floor($usableWidth / $iconWidth)
 		$rows = [math]::Floor($usableHeight / $iconHeight)
-    	$totalIcons = $columns * $rows
+		$totalIcons = $columns * $rows
 
-    	# Return result as object
+		# Return result as object
 		$output += [PSCustomObject]@{
 			Width = $usableWidth
-        	Height = $usableHeight
-        	IconWidth = [math]::Floor($iconWidth)
-        	IconHeight = [math]::Floor($iconHeight)
-        	Columns = $columns
+			Height = $usableHeight
+			IconWidth = [math]::Floor($iconWidth)
+			IconHeight = [math]::Floor($iconHeight)
+			Columns = $columns
 			Rows = $rows
-        	TotalIcons = $totalIcons
-    	}
+			TotalIcons = $totalIcons
+		}
 	}
 	return $output
 }

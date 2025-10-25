@@ -197,7 +197,7 @@ function main {
 			Write-Host "Created directory $destPath" -ForegroundColor Yellow
 		}
 		$uniquePath = Get-UniquePath -Path "$destPath\$fileName" -ItemType File
-		mv $file.FullName $uniquePath
+		mv $file $uniquePath
 	}
 	if (-not $ForceDirs -and $config["dir"].Skip) { return }
 	$dest = $config["dir"]

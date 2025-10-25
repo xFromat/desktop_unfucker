@@ -3,4 +3,5 @@
 .vscode/
 tests/*.txt
 **/generated_files.txt
+temp/
 

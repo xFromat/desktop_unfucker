@@ -118,14 +118,14 @@ function Init-CounterObj {
 			DirsCount = 0
 			Dirs = @()
 		}
-	}  
+	}
 	return [PSCustomObject]@{
 		Path = $path
-		PathSuffix = if ((Resolve-Path $path).ProviderPath -like "C:\Users\Public\*") { $suffixes["public"] } else { $suffixes["priv"] }
-		FilesCount = (Get-ChildItem -Path $path -File).Count
-		Files = Get-ChildItem -Path $path -File
-		DirsCount = (Get-ChildItem -Path $path -Directory).Count
-		Dirs = (Get-ChildItem -Path $path -Directory)
+		PathSuffix = if ((Resolve-Path -LiteralPath $path).ProviderPath -like "C:\Users\Public\*") { $suffixes["public"] } else { $suffixes["priv"] }
+		FilesCount = (Get-ChildItem -LiteralPath $path -File).Count
+		Files = Get-ChildItem -LiteralPath $path -File | ForEach-Object { (Resolve-Path $_.FullName).Path }
+		DirsCount = (Get-ChildItem -LiteralPath $path -Directory).Count
+		Dirs = (Get-ChildItem -LiteralPath $path -Directory) | ForEach-Object { (Resolve-Path $_.FullName).Path }
 	}
 }
 

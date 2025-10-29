@@ -23,7 +23,7 @@ This script helps clean up cluttered desktops by automatically categorizing and 
 3. Run the script:
 
     ```powershell
-    .\desktop-unfucker.ps1
+    .\unfuck_desktop.ps1
     ```
 
 ## Features
